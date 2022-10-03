@@ -13,6 +13,7 @@ def step(fn):
         is_method = (
                 args
                 and isinstance(args[0], object)
+                # and isinstance(getattr(args[0], fn.__name__), types.MethodType)
                 and isinstance(getattr(args[0], fn.__name__), types.MethodType)
         )
 
@@ -24,10 +25,11 @@ def step(fn):
         args_and_kwargs_string = (
             (': ' + ', '.join(map(str, args_and_kwargs_to_log_as_strings)))
             if args_and_kwargs_to_log_as_strings
-            else ' ')
+            else ''
+        )
 
         print(
-            (f'[{args[0].__class__.__name__}] ' if is_method else ' ')
+            (f'[{args[0].__class__.__name__}] ' if is_method else '')
             + humanify(fn.__name__)
             + args_and_kwargs_string
         )
@@ -36,13 +38,13 @@ def step(fn):
 
     return fn_with_logging
 
+
 @step
 def given_sign_up_form_opened():
-    print("! " + given_sign_up_form_opened.__name__ + " !")
     ...
 
 
-class SigthForm:
+class SignUpForm:
     @step
     def fill_name(self, first_name, surname):
         pass
@@ -51,39 +53,43 @@ class SigthForm:
     @step
     def fill_email(self, value):
         pass
-
+        return self
 
     @step
     def fill_password(self, value):
         pass
-
+        return self
 
     @step
     def submit(self):
         pass
-
+        return self
 
 
 class DashBoard:
+    ...
+
     @step
     def go_to_user_profile(self):
         pass
 
 
-sign_up_form = SigthForm
-dashboard = DashBoard
+sign_up_form = SignUpForm()
+dashboard = DashBoard()
 
+given_sign_up_form_opened()
+(sign_up_form
+ .fill_name('Inq', surname='.Den')
+ .fill_email(value='balbalba@mail.com')
+ .fill_password('123454321')
+ .submit()
+ )
+dashboard.go_to_user_profile()
+
+'''
 given_sign_up_form_opened()
 sign_up_form.fill_name('Inq', surname= '.Den')
 sign_up_form.fill_email(value= 'adsa@asdfs.df')
 sign_up_form.fill_password('234123')
 sign_up_form.submit()
 '''
-(sign_up_form
-.fill_name('Inq', surname= '.Den')
- .fill_email(value= 'balbalba@mail.com')
- .fill_password('123454321')
- .submit()
- )
- '''
-dashboard.go_to_user_profile()
